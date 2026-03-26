@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vancouver Volkswagen · Digital Growth Assessment 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&family=DM+Mono:wght@300&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"] {
+  --bg: #0e0e0c;
+  --surface: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --ink: #f0ede8;
+  --muted: rgba(240,237,232,0.36);
+  --gold: #c9aa72;
+  --gold-dim: rgba(201,170,114,0.16);
+  --gold-glow: rgba(201,170,114,0.07);
+  --drawer-bg: rgba(11,11,9,0.97);
+  --score-track: rgba(255,255,255,0.08);
+  --grain-op: 0.5;
+  --glow-op: 0.11;
+  --red: rgba(220,80,80,0.9);
+  --amber: rgba(200,140,60,0.9);
+  --green: rgba(80,170,80,0.9);
+  --blue: rgba(80,140,220,0.9);
+  --red-bg: rgba(220,80,80,0.08);
+  --amber-bg: rgba(200,140,60,0.08);
+  --green-bg: rgba(80,170,80,0.08);
+  --blue-bg: rgba(80,140,220,0.08);
+}
+[data-theme="light"] {
+  --bg: #f3f1ed;
+  --surface: rgba(0,0,0,0.03);
+  --border: rgba(0,0,0,0.07);
+  --ink: #1c1a17;
+  --muted: rgba(28,26,23,0.42);
+  --gold: #9e7638;
+  --gold-dim: rgba(158,118,56,0.13);
+  --gold-glow: rgba(158,118,56,0.06);
+  --drawer-bg: rgba(241,239,234,0.98);
+  --score-track: rgba(0,0,0,0.08);
+  --grain-op: 0.28;
+  --glow-op: 0.07;
+  --red: #BE2E2B;
+  --amber: #9B5600;
+  --green: #2E6B1E;
+  --blue: #1255A3;
+  --red-bg: rgba(190,46,43,0.07);
+  --amber-bg: rgba(155,86,0,0.07);
+  --green-bg: rgba(46,107,30,0.07);
+  --blue-bg: rgba(18,85,163,0.07);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;cursor:none}
+body{background:var(--bg);color:var(--ink);font-family:'Jost',sans-serif;font-weight:300;transition:background .6s ease,color .5s ease}
+
+/* CURSOR */
+#cursor{position:fixed;z-index:9999;pointer-events:none;width:7px;height:7px;background:var(--gold);border-radius:50%;transform:translate(-50%,-50%);transition:background .3s}
+#cursor-ring{position:fixed;z-index:9998;pointer-events:none;width:32px;height:32px;border:1px solid rgba(201,170,114,.3);border-radius:50%;transform:translate(-50%,-50%);transition:width .4s cubic-bezier(.16,1,.3,1),height .4s cubic-bezier(.16,1,.3,1)}
+body:has(button:hover) #cursor-ring,body:has(a:hover) #cursor-ring{width:50px;height:50px}
+
+/* GRAIN */
+body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");opacity:var(--grain-op);transition:opacity .5s}
+
+/* GLOW */
+.bg-glow{position:fixed;pointer-events:none;z-index:0;border-radius:50%;filter:blur(130px);opacity:var(--glow-op);transition:opacity .6s}
+#glow1{width:560px;height:560px;background:var(--gold);top:-170px;right:-170px}
+#glow2{width:360px;height:360px;background:#8b7355;bottom:-70px;left:-70px}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:26px 40px}
+.brand{font-family:'Jost',sans-serif;font-size:11px;font-weight:200;letter-spacing:.30em;text-transform:uppercase;color:var(--muted);transition:color .4s}
+.brand span{color:var(--gold)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+
+/* THEME BTN */
+#theme-btn{width:34px;height:34px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:none;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s;flex-shrink:0}
+#theme-btn:hover{background:var(--gold-dim);border-color:var(--gold-dim)}
+.t-icon{font-size:12px;line-height:1;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+[data-theme="dark"] .i-moon{display:block}
+[data-theme="dark"] .i-sun{display:none}
+[data-theme="light"] .i-moon{display:none}
+[data-theme="light"] .i-sun{display:block}
+
+/* HAMBURGER */
+#menu-btn{width:34px;height:34px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:background .2s,border-color .2s}
+#menu-btn:hover{background:var(--gold-dim);border-color:var(--gold-dim)}
+.bar{display:block;height:1px;background:var(--ink);transition:all .38s cubic-bezier(.16,1,.3,1)}
+.bar:nth-child(1){width:16px}
+.bar:nth-child(2){width:10px}
+.bar:nth-child(3){width:16px}
+#menu-btn.open .bar:nth-child(1){transform:rotate(45deg) translate(4px,4px);width:14px}
+#menu-btn.open .bar:nth-child(2){opacity:0;transform:scaleX(0)}
+#menu-btn.open .bar:nth-child(3){transform:rotate(-45deg) translate(4px,-4px);width:14px}
+
+/* DRAWER */
+#menu-drawer{position:fixed;top:0;right:0;bottom:0;z-index:90;width:268px;background:var(--drawer-bg);border-left:1px solid var(--border);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);display:flex;flex-direction:column;justify-content:center;padding:80px 38px;transform:translateX(100%);transition:transform .52s cubic-bezier(.16,1,.3,1),background .6s ease,border-color .4s}
+#menu-drawer.open{transform:translateX(0)}
+.menu-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:28px;opacity:.8}
+.menu-nav{list-style:none;display:flex;flex-direction:column;gap:2px}
+.menu-nav li a{display:flex;align-items:center;gap:13px;padding:11px 0;text-decoration:none;font-size:13px;font-weight:300;color:var(--muted);letter-spacing:.03em;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+.menu-nav li a:hover,.menu-nav li a.active-link{color:var(--ink)}
+.menu-nav li a.active-link{border-bottom-color:var(--border)}
+.menu-num{font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);opacity:.55;width:20px;flex-shrink:0}
+.menu-footer{position:absolute;bottom:34px;left:38px;right:38px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--muted);opacity:.42;line-height:1.8}
+
+/* OVERLAY */
+#overlay{position:fixed;inset:0;z-index:85;background:rgba(0,0,0,.3);opacity:0;pointer-events:none;backdrop-filter:blur(3px);transition:opacity .4s}
+[data-theme="light"] #overlay{background:rgba(0,0,0,.15)}
+#overlay.visible{opacity:1;pointer-events:all}
+
+/* DOTS */
+#dots{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:7px;align-items:center}
+.dot{width:4px;height:4px;border-radius:50%;background:var(--muted);opacity:.28;transition:all .35s cubic-bezier(.16,1,.3,1);cursor:none}
+.dot.active{width:22px;border-radius:2px;background:var(--gold);opacity:1}
+
+/* SLIDE ENGINE */
+#app{position:fixed;inset:0;z-index:1;display:flex;align-items:center;justify-content:center}
+.slide{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  padding:80px 60px 58px;
+  opacity:0;pointer-events:none;
+  transform:scale(.95);filter:blur(6px);
+  transition:opacity .42s cubic-bezier(.4,0,.2,1),transform .42s cubic-bezier(.4,0,.2,1),filter .42s cubic-bezier(.4,0,.2,1);
+  will-change:transform,opacity,filter;
+}
+.slide.active{opacity:1;pointer-events:all;transform:scale(1);filter:blur(0)}
+.slide.out-fwd{opacity:0;transform:scale(1.05);filter:blur(5px)}
+.slide.out-bck{opacity:0;transform:scale(.94);filter:blur(5px)}
+
+/* SHARED */
+.s-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:11px}
+.s-eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--gold)}
+.s-title{font-family:'Playfair Display',serif;font-size:clamp(32px,3.6vw,48px);font-weight:300;line-height:1.1;margin-bottom:36px;letter-spacing:-.01em}
+.s-title em{font-style:italic;color:var(--muted)}
+
+/* S1 HERO */
+.s1-inner{text-align:center;max-width:640px}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(44px,5.8vw,74px);font-weight:300;line-height:1.05;letter-spacing:-.02em;margin-bottom:20px}
+.hero-title em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:14px;font-weight:200;color:var(--muted);line-height:1.8;max-width:460px;margin:0 auto;letter-spacing:.02em}
+
+/* S2 OVERVIEW */
+.s2-inner{width:100%;max-width:860px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color .4s}
+.stat-cell{padding:24px 20px;border-right:1px solid var(--border);position:relative;overflow:hidden;transition:background .3s,border-color .4s}
+.stat-cell:last-child{border-right:none}
+.stat-cell::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--gold),transparent);opacity:0;transition:opacity .3s}
+.stat-cell:hover{background:var(--gold-glow)}
+.stat-cell:hover::after{opacity:1}
+.stat-n{font-family:'Playfair Display',serif;font-size:34px;font-weight:300;line-height:1;margin-bottom:5px}
+.stat-n sup{font-size:14px;color:var(--gold)}
+.stat-n.red{color:var(--red)}
+.stat-n.amber{color:var(--amber)}
+.stat-n.green{color:var(--green)}
+.stat-n.blue{color:var(--blue)}
+.stat-l{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:background .3s,border-color .3s}
+.info-card:hover{background:var(--gold-glow);border-color:rgba(201,170,114,.16)}
+.ic-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
+.ic-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:400;margin-bottom:6px}
+.ic-text{font-size:12px;color:var(--muted);line-height:1.7;font-weight:200}
+
+/* S3 CRITICAL ISSUES */
+.platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:800px}
+.platform-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px 20px;position:relative;overflow:hidden;transition:transform .38s cubic-bezier(.16,1,.3,1),background .3s,border-color .3s}
+.platform-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s}
+.platform-card:hover{transform:translateY(-4px)}
+.platform-card:hover::before{opacity:1}
+.pc-red::before{background:linear-gradient(135deg,rgba(190,46,43,.06),transparent)}
+.pc-amber::before{background:linear-gradient(135deg,rgba(155,86,0,.06),transparent)}
+.pc-blue::before{background:linear-gradient(135deg,rgba(18,85,163,.06),transparent)}
+.pc-icon{font-size:17px;margin-bottom:13px}
+.pc-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.pc-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:400;margin-bottom:8px}
+.pc-desc{font-size:12px;color:var(--muted);line-height:1.6;font-weight:200;margin-bottom:14px}
+.pc-metric{font-family:'Playfair Display',serif;font-size:24px;font-weight:300}
+.pc-metric.red{color:var(--red)}
+.pc-metric-l{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.1em;margin-top:2px}
+
+/* S4 TRAFFIC */
+.gallery-layout{display:grid;grid-template-columns:1.4fr 1fr;grid-template-rows:1fr 1fr;gap:9px;width:100%;max-width:860px;height:460px}
+.img-card{border-radius:16px;overflow:hidden;position:relative;background:var(--surface);border:1px solid var(--border);cursor:none;transition:transform .42s cubic-bezier(.16,1,.3,1),border-color .3s}
+.img-card:hover{transform:scale(1.014);border-color:rgba(201,170,114,.26)}
+.img-card.tall{grid-row:span 2}
+.img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:9px;position:relative;overflow:hidden}
+[data-theme="dark"] .img-p1{background:linear-gradient(145deg,#1a1712 0%,#2a2418 60%,#1e1a12 100%)}
+[data-theme="dark"] .img-p2{background:linear-gradient(160deg,#141210 0%,#1e1b15 100%)}
+[data-theme="dark"] .img-p3{background:linear-gradient(130deg,#181612 0%,#2a2218 100%)}
+[data-theme="light"] .img-p1{background:linear-gradient(145deg,#dedad3 0%,#cac3b4 60%,#d3cec5 100%)}
+[data-theme="light"] .img-p2{background:linear-gradient(160deg,#d8d4cc 0%,#cbc5bb 100%)}
+[data-theme="light"] .img-p3{background:linear-gradient(130deg,#d5d1c8 0%,#c6bfb2 100%)}
+.img-placeholder::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(201,170,114,.09) 0%,transparent 60%)}
+.img-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);z-index:1}
+.img-icon{font-size:24px;z-index:1;opacity:.2}
+.img-caption{position:absolute;bottom:0;left:0;right:0;padding:18px 15px 13px;font-size:11px;color:var(--ink);font-weight:300;letter-spacing:.04em;z-index:2}
+[data-theme="dark"] .img-caption{background:linear-gradient(transparent,rgba(10,9,8,.84))}
+[data-theme="light"] .img-caption{background:linear-gradient(transparent,rgba(215,210,202,.92))}
+.img-caption-tag{font-family:'DM Mono',monospace;font-size:8px;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:3px}
+
+/* S5 TECHNICAL FIXES */
+.seo-layout{display:grid;grid-template-columns:1fr 1.2fr;gap:36px;width:100%;max-width:860px;align-items:start}
+.seo-scores{display:flex;flex-direction:column;gap:14px}
+.score-row{display:flex;align-items:center;gap:13px}
+.score-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);width:106px;flex-shrink:0}
+.score-track{flex:1;height:1px;background:var(--score-track);position:relative}
+.score-fill{height:1px;background:linear-gradient(90deg,var(--gold),rgba(201,170,114,.3));width:0%;transition:width 1.5s cubic-bezier(.16,1,.3,1);position:relative}
+.score-fill::after{content:'';position:absolute;right:-4px;top:-3.5px;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.score-val{font-family:'Playfair Display',serif;font-size:16px;width:28px;text-align:right;flex-shrink:0}
+.seo-cards{display:flex;flex-direction:column;gap:8px}
+.seo-card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:15px 17px;display:flex;gap:13px;align-items:flex-start;transition:background .3s,border-color .3s}
+.seo-card:hover{background:var(--gold-glow);border-color:rgba(201,170,114,.14)}
+.seo-num{font-family:'Playfair Display',serif;font-size:24px;font-weight:300;color:var(--gold);line-height:1;flex-shrink:0;width:32px}
+.seo-text h4{font-size:13px;font-weight:400;margin-bottom:3px}
+.seo-text p{font-size:11px;color:var(--muted);line-height:1.6;font-weight:200}
+
+/* S6 COMPETITIVE */
+.attr-layout{width:100%;max-width:820px}
+.attr-nodes{display:flex;align-items:stretch;gap:0;margin:32px 0 16px;border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color .4s}
+.attr-node{flex:1;padding:20px 16px;text-align:center;border-right:1px solid var(--border);position:relative;transition:background .3s,border-color .4s;cursor:default}
+.attr-node:last-child{border-right:none}
+.attr-node:hover{background:var(--gold-glow)}
+.an-phase{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.an-pct{font-family:'Playfair Display',serif;font-size:28px;font-weight:300;line-height:1;margin-bottom:4px}
+.an-pct.highlight{color:var(--gold)}
+.an-pct.red{color:var(--red)}
+.an-channels{font-size:10px;color:var(--muted);font-weight:200}
+.an-arrow{position:absolute;right:-1px;top:50%;transform:translateY(-50%);z-index:2;font-size:8px;color:var(--gold);opacity:.4}
+.attr-insight{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:16px 20px;display:flex;gap:13px;align-items:center;transition:background .4s,border-color .4s}
+.ai-icon{font-size:13px;flex-shrink:0}
+.ai-text{font-size:12px;color:var(--muted);line-height:1.7;font-weight:200}
+.ai-text strong{color:var(--ink);font-weight:400}
+
+/* S7 ROADMAP */
+.roadmap-layout{width:100%;max-width:820px}
+.rm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:32px}
+.rm-phase{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px 15px;position:relative;transition:background .3s,transform .38s cubic-bezier(.16,1,.3,1),border-color .4s}
+.rm-phase:hover{background:var(--gold-glow);transform:translateY(-3px)}
+.rm-phase::before{content:'';position:absolute;top:0;left:18px;right:18px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .3s}
+.rm-phase:hover::before{opacity:1}
+.rm-period{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:11px}
+.rm-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:400;margin-bottom:9px;line-height:1.2}
+.rm-items{list-style:none;display:flex;flex-direction:column;gap:5px}
+.rm-items li{font-size:11px;color:var(--muted);font-weight:200;line-height:1.5;padding-left:11px;position:relative}
+.rm-items li::before{content:'—';position:absolute;left:0;color:var(--gold);font-size:9px}
+
+/* S8 OPPORTUNITIES */
+.opp-layout{width:100%;max-width:860px}
+.opp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px}
+.opp-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:background .3s,border-color .3s,transform .3s}
+.opp-card:hover{background:var(--gold-glow);border-color:rgba(201,170,114,.2);transform:translateY(-2px)}
+.opp-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.opp-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:400;margin-bottom:7px;line-height:1.2}
+.opp-text{font-size:11px;color:var(--muted);line-height:1.65;font-weight:200}
+.opp-stat{font-family:'Playfair Display',serif;font-size:28px;font-weight:300;margin-top:12px;color:var(--gold)}
+.opp-stat-l{font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:.1em;margin-top:2px}
+
+/* S9 PITCH */
+.pitch-layout{width:100%;max-width:820px}
+.pitch-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:26px}
+.pitch-block{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:18px 20px;transition:background .3s,border-color .3s}
+.pitch-block:hover{background:var(--gold-glow)}
+.pitch-q{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.pitch-a{font-size:12px;color:var(--muted);line-height:1.7;font-weight:200;border-left:1px solid var(--gold);padding-left:12px}
+
+/* S10 CLOSING */
+.s10-inner{text-align:center;max-width:520px}
+.closing-title{font-family:'Playfair Display',serif;font-size:clamp(36px,4.8vw,58px);font-weight:300;line-height:1.1;margin-bottom:16px}
+.closing-title em{font-style:italic;color:var(--gold)}
+.closing-sub{font-size:14px;color:var(--muted);font-weight:200;line-height:1.8;margin-bottom:32px}
+.closing-sig{font-family:'Playfair Display',serif;font-size:13px;font-style:italic;color:var(--muted);border-top:1px solid var(--border);padding-top:16px;margin-top:16px;transition:border-color .4s}
+.closing-sig strong{color:var(--gold);font-style:normal;font-weight:400}
+
+/* Utility */
+.kw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:20px}
+.kw-item{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:14px 16px;transition:background .3s}
+.kw-item:hover{background:var(--gold-glow)}
+.kw-term{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink);margin-bottom:4px}
+.kw-vol{font-family:'Playfair Display',serif;font-size:20px;font-weight:300;color:var(--red)}
+.kw-intent{font-size:10px;color:var(--muted);margin-top:2px}
+.bar-row{display:flex;align-items:center;gap:12px;margin:7px 0}
+.bar-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);min-width:130px}
+.bar-bg{flex:1;height:1px;background:var(--score-track);position:relative}
+.bar-fill-h{height:1px;background:linear-gradient(90deg,var(--gold),rgba(201,170,114,.2))}
+.bar-val-r{font-family:'Playfair Display',serif;font-size:14px;min-width:52px;text-align:right}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div class="bg-glow" id="glow1"></div>
+<div class="bg-glow" id="glow2"></div>
+<div id="overlay"></div>
+
+<div id="topbar">
+  <div class="brand">Alejandro Benita <span>·</span> Director of Growth & Brand Strategy</div>
+  <div class="topbar-right">
+    <button id="theme-btn" aria-label="Toggle theme">
+      <span class="t-icon i-moon">☽</span>
+      <span class="t-icon i-sun" style="font-size:14px;">○</span>
+    </button>
+    <button id="menu-btn" aria-label="Menu">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav id="menu-drawer">
+  <div class="menu-label">Navigation</div>
+  <ul class="menu-nav">
+    <li><a href="#" data-slide="0" class="active-link"><span class="menu-num">01</span>Overview</a></li>
+    <li><a href="#" data-slide="1"><span class="menu-num">02</span>Site Audit</a></li>
+    <li><a href="#" data-slide="2"><span class="menu-num">03</span>Critical Issues</a></li>
+    <li><a href="#" data-slide="3"><span class="menu-num">04</span>Traffic Analysis</a></li>
+    <li><a href="#" data-slide="4"><span class="menu-num">05</span>Technical Fixes</a></li>
+    <li><a href="#" data-slide="5"><span class="menu-num">06</span>Competitive Gap</a></li>
+    <li><a href="#" data-slide="6"><span class="menu-num">07</span>90-Day Plan</a></li>
+    <li><a href="#" data-slide="7"><span class="menu-num">08</span>Growth Opportunities</a></li>
+    <li><a href="#" data-slide="8"><span class="menu-num">09</span>Executive Pitch</a></li>
+    <li><a href="#" data-slide="9"><span class="menu-num">10</span>Closing</a></li>
+  </ul>
+  <div class="menu-footer">Alejandro Benita<br>Digital Growth Assessment · Vancouver VW · 2026<br>Confidential</div>
+</nav>
+
+<div id="dots"></div>
+
+<div id="app">
+
+  <!-- S1 HERO -->
+  <div class="slide active" data-index="0">
+    <div class="s1-inner">
+      <h1 class="hero-title">Canada's #1 dealer.<br><em>Outranked</em><br>by the competition.</h1>
+      <p class="hero-sub">A complete technical SEO audit of Vancouver Volkswagen — 598 identified issues, 10 critical fixes, and a 90-day plan to align digital performance with market leadership.</p>
+    </div>
+  </div>
+
+  <!-- S2 SITE AUDIT -->
+  <div class="slide" data-index="1">
+    <div class="s2-inner">
+      <div class="s-eyebrow">01 — Site Audit</div>
+      <h2 class="s-title">Current state &<br><em>the structural gap</em></h2>
+      <div class="stat-grid">
+        <div class="stat-cell"><div class="stat-n amber">76<sup>%</sup></div><div class="stat-l">Site health score</div></div>
+        <div class="stat-cell"><div class="stat-n red">15</div><div class="stat-l">Active SEO errors</div></div>
+        <div class="stat-cell"><div class="stat-n amber">583</div><div class="stat-l">Performance warnings</div></div>
+        <div class="stat-cell"><div class="stat-n">961</div><div class="stat-l">Keywords indexed</div></div>
+      </div>
+      <div class="two-col">
+        <div class="info-card">
+          <div class="ic-tag">The Core Problem</div>
+          <div class="ic-title">92% of pages carry active issues</div>
+          <div class="ic-text">The homepage — the most critical URL in the domain — holds 103 individual problems. A single structural flaw in the CMS template blocks PageRank from reaching every product and inventory page on the site. The site has more indexed keywords than any direct competitor in Lower Mainland, yet generates less effective traffic.</div>
+        </div>
+        <div class="info-card">
+          <div class="ic-tag">The Opportunity</div>
+          <div class="ic-title">356 links fixed changes everything</div>
+          <div class="ic-text">635 SERP features available but uncaptured. 157 Local Pack keywords without visibility. 798 Video SERP opportunities with zero content. One CMS template correction could deliver +50–200% organic traffic in under 60 days — before investing a dollar in additional content or ads.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 CRITICAL ISSUES -->
+  <div class="slide" data-index="2">
+    <div style="width:100%;max-width:820px">
+      <div class="s-eyebrow">02 — Critical Issues</div>
+      <h2 class="s-title" style="margin-bottom:22px">Four errors <em>suppressing</em><br>every ranking</h2>
+      <div class="platform-grid">
+        <div class="platform-card pc-red">
+          <div class="pc-icon">◈</div>
+          <div class="pc-tag">Critical · CMS Template</div>
+          <div class="pc-name">356 Nofollow Internal Links</div>
+          <div class="pc-desc">Every inventory link from the homepage is tagged nofollow — PageRank can't reach any product page. A broken CMS variable ({$UULINK}) also generates 265 links pointing to non-existent URLs. Google sees dead ends where it should see Tiguan, ID.4, and Atlas listings.</div>
+          <div class="pc-metric red">83%</div>
+          <div class="pc-metric-l">of all traffic stuck on homepage</div>
+        </div>
+        <div class="platform-card pc-amber">
+          <div class="pc-icon">◇</div>
+          <div class="pc-tag">Critical · Architecture</div>
+          <div class="pc-name">Homepage: 103 Active Issues</div>
+          <div class="pc-desc">Five simultaneous H1 tags. Duplicate content with /ourteam.html (85%+ identical HTML). Same title tag across two pages. Authority Score 30 — low for Canada's #1 VW dealer. The highest-value URL in the domain has the lowest SEO score on the site.</div>
+          <div class="pc-metric red">−17.5%</div>
+          <div class="pc-metric-l">branded organic traffic declining</div>
+        </div>
+        <div class="platform-card pc-blue">
+          <div class="pc-icon">▷</div>
+          <div class="pc-tag">Critical · On-Page</div>
+          <div class="pc-name">ID.4 + Tiguan 2026: No Title Tag</div>
+          <div class="pc-desc">The two highest-demand models of 2026 have no &lt;title&gt; tag despite having ILR 100 — maximum content relevance score. Google auto-generates replacements. These pages are invisible for the highest-intent purchase queries in the VW market: "VW ID.4 Vancouver" and "Tiguan 2026 Vancouver."</div>
+          <div class="pc-metric red">0</div>
+          <div class="pc-metric-l">competitive SERP visibility</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 TRAFFIC ANALYSIS -->
+  <div class="slide" data-index="3">
+    <div style="width:100%;max-width:860px">
+      <div class="s-eyebrow">03 — Traffic Analysis</div>
+      <h2 class="s-title" style="margin-bottom:18px;font-size:32px">More keywords. <em>Less traffic.</em></h2>
+      <div class="gallery-layout">
+        <div class="img-card tall">
+          <div class="img-placeholder img-p1">
+            <div class="img-icon" style="font-family:'Playfair Display',serif;font-size:52px;opacity:.55;color:var(--gold)">15.3K</div>
+            <div class="img-label">visits / month — poorly distributed</div>
+          </div>
+          <div class="img-caption">
+            <span class="img-caption-tag">Vancouver Volkswagen</span>
+            961 keywords · Canada's #1 VW dealer · Site health: 76% · Homepage: 103 issues · Branded traffic: −17.5% · 83.1% of all traffic on a single page
+          </div>
+        </div>
+        <div class="img-card">
+          <div class="img-placeholder img-p2">
+            <div class="img-icon" style="font-family:'Playfair Display',serif;font-size:36px;opacity:.55;color:var(--gold)">35%</div>
+            <div class="img-label">keyword overlap with top competitors</div>
+          </div>
+          <div class="img-caption">
+            <span class="img-caption-tag">Capilano VW — Primary Competitor</span>
+            ~220 keywords, comparable organic traffic. Outperforms Vancouver VW in traffic efficiency despite a fraction of the keyword volume.
+          </div>
+        </div>
+        <div class="img-card">
+          <div class="img-placeholder img-p3">
+            <div class="img-icon" style="font-family:'Playfair Display',serif;font-size:36px;opacity:.55;color:var(--gold)">635+</div>
+            <div class="img-label">SERP features uncaptured</div>
+          </div>
+          <div class="img-caption">
+            <span class="img-caption-tag">Available SERP Opportunity</span>
+            Video (798 kw) · People Also Ask (473 kw) · Local Pack (157 kw) · AI Overviews (428 kw) — all available, none captured.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5 TECHNICAL FIXES -->
+  <div class="slide" data-index="4">
+    <div class="seo-layout">
+      <div>
+        <div class="s-eyebrow">04 — Technical Fixes</div>
+        <h2 class="s-title" style="font-size:34px;margin-bottom:22px">Audit <em>metrics</em></h2>
+        <p style="font-size:12px;color:var(--muted);line-height:1.8;font-weight:200;margin-bottom:24px">Four key indicators from the SEMrush site audit — each representing a fixable structural weakness actively suppressing organic performance and revenue.</p>
+        <div class="seo-scores">
+          <div class="score-row"><span class="score-lbl">Site Health</span><div class="score-track"><div class="score-fill" data-w="76"></div></div><span class="score-val">76%</span></div>
+          <div class="score-row"><span class="score-lbl">Healthy Pages</span><div class="score-track"><div class="score-fill" data-w="5"></div></div><span class="score-val">5%</span></div>
+          <div class="score-row"><span class="score-lbl">Traffic Spread</span><div class="score-track"><div class="score-fill" data-w="17"></div></div><span class="score-val">17%</span></div>
+          <div class="score-row"><span class="score-lbl">SERP Capture</span><div class="score-track"><div class="score-fill" data-w="12"></div></div><span class="score-val">12%</span></div>
+        </div>
+      </div>
+      <div class="seo-cards">
+        <div class="seo-card"><div class="seo-num">1.</div><div class="seo-text"><h4>Resolve {$UULINK} Bug — Remove 356 Nofollow Links</h4><p>Escalate to D2C Media technical support to fix the CMS template variable generating nofollow on all inventory links. Highest-ROI fix in the entire audit. Expected organic uplift: +50–200% in 60–90 days.</p></div></div>
+        <div class="seo-card"><div class="seo-num">2.</div><div class="seo-text"><h4>Title Tags: ID.4 + Tiguan 2026</h4><p>Add missing &lt;title&gt; tags to the two highest-demand VW models. 30-minute fix on ILR-100 pages. Format: "2025 Volkswagen ID.4 for Sale in Vancouver | Vancouver VW". Expected CTR improvement: +15–30%.</p></div></div>
+        <div class="seo-card"><div class="seo-num">3.</div><div class="seo-text"><h4>Fix Homepage Architecture</h4><p>Reduce 5 H1 tags to 1. Differentiate duplicate content from /ourteam.html (85%+ identical). Add explicit canonical. Recovers brand query rankings and prevents de-indexing of the primary URL.</p></div></div>
+        <div class="seo-card"><div class="seo-num">4.</div><div class="seo-text"><h4>Create llms.txt + AI Search Visibility</h4><p>30-minute implementation that directs ChatGPT, Perplexity, and Google AI Overviews to the right inventory pages. Site currently returns 404. Zero direct local competitors have this in place.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6 COMPETITIVE GAP -->
+  <div class="slide" data-index="5">
+    <div class="attr-layout">
+      <div class="s-eyebrow">05 — Competitive Gap</div>
+      <h2 class="s-title" style="font-size:38px;margin-bottom:7px">Where organic traffic <em>actually</em><br>goes — and why.</h2>
+      <p style="font-size:12px;color:var(--muted);font-weight:200;line-height:1.7;max-width:520px;margin-bottom:0">961 keywords indexed. 15,300 visits per month. 83% of that traffic lands on one page because PageRank cannot flow anywhere else — blocked by a template bug that affects every single inventory link.</p>
+      <div class="attr-nodes">
+        <div class="attr-node" style="background:var(--gold-glow);border-left:1px solid rgba(201,170,114,.2)"><div class="an-phase">Homepage</div><div class="an-pct highlight">83.1%</div><div class="an-channels" style="color:var(--gold);opacity:.7">Organic traffic concentration</div><div class="an-arrow">›</div></div>
+        <div class="attr-node"><div class="an-phase">Parts Subdomain</div><div class="an-pct" style="color:var(--muted)">9.3%</div><div class="an-channels">parts.vancouvervolkswagen.com</div><div class="an-arrow">›</div></div>
+        <div class="attr-node"><div class="an-phase">Service Pages</div><div class="an-pct" style="color:var(--muted)">1.2%</div><div class="an-channels">Service · Booking</div><div class="an-arrow">›</div></div>
+        <div class="attr-node"><div class="an-phase">All Inventory</div><div class="an-pct red">~2%</div><div class="an-channels">New · Used · Models · EV</div></div>
+      </div>
+      <div class="attr-insight"><div class="ai-icon">◈</div><div class="ai-text"><strong>Root cause:</strong> 356 internal links tagged nofollow in the CMS template prevent PageRank from flowing to inventory pages. Canada's #1 VW dealer — with 100+ product pages, 961 indexed keywords, and Authority Score 30 — is effectively invisible to Google's ranking algorithm at the product level. This is a template fix, not a content problem.</div></div>
+    </div>
+  </div>
+
+  <!-- S7 90-DAY PLAN -->
+  <div class="slide" data-index="6">
+    <div class="roadmap-layout">
+      <div class="s-eyebrow">06 — Implementation</div>
+      <h2 class="s-title" style="font-size:38px">90-day <em>action plan</em></h2>
+      <div class="rm-grid">
+        <div class="rm-phase">
+          <div class="rm-period">Days 1–7</div>
+          <div class="rm-title">Immediate Wins</div>
+          <ul class="rm-items">
+            <li>Title tags: ID.4 + Tiguan 2026</li>
+            <li>Create /llms.txt file</li>
+            <li>Escalate {$UULINK} bug to D2C Media</li>
+            <li>Baseline: Search Console + SEMrush snapshot</li>
+            <li>Fix sitemap HTTP → HTTPS</li>
+          </ul>
+        </div>
+        <div class="rm-phase">
+          <div class="rm-period">Days 8–30</div>
+          <div class="rm-title">Architecture</div>
+          <ul class="rm-items">
+            <li>Remove 356 nofollow links post-platform fix</li>
+            <li>Homepage: 5 H1 → 1 H1</li>
+            <li>Separate duplicate content from /ourteam.html</li>
+            <li>Rewrite 19 truncated title tags</li>
+            <li>Implement Review schema (1,273+ reviews)</li>
+          </ul>
+        </div>
+        <div class="rm-phase">
+          <div class="rm-period">Days 31–60</div>
+          <div class="rm-title">Authority & Content</div>
+          <ul class="rm-items">
+            <li>EV page strategy: ID.4, rebates, home charging</li>
+            <li>Car schema on all VDPs (ID.4, Tiguan priority)</li>
+            <li>FAQPage schema → 473 People Also Ask keywords</li>
+            <li>Google Business Profile: posts + Q&A + photos</li>
+            <li>First 3 YouTube videos (test drive, EV, history)</li>
+          </ul>
+        </div>
+        <div class="rm-phase" style="border-color:rgba(201,170,114,.16)">
+          <div class="rm-period">Days 61–90</div>
+          <div class="rm-title">Scale & Measure</div>
+          <ul class="rm-items">
+            <li>Full performance vs. baseline report</li>
+            <li>Post-sale email workflow (branded recovery)</li>
+            <li>Video SERP strategy: 8–10 videos + VDP embeds</li>
+            <li>VDP A/B testing: photos, pricing, descriptions</li>
+            <li>Q2 strategy recommendation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S8 GROWTH OPPORTUNITIES -->
+  <div class="slide" data-index="7">
+    <div class="opp-layout">
+      <div class="s-eyebrow">07 — Growth Opportunities</div>
+      <h2 class="s-title" style="font-size:38px;margin-bottom:8px">Untapped <em>revenue channels</em></h2>
+      <p style="font-size:12px;color:var(--muted);font-weight:200;line-height:1.7;max-width:620px">Every opportunity below exists today in the data — no new content creation required for most, just activation of assets already present in the domain.</p>
+      <div class="opp-grid">
+        <div class="opp-card">
+          <div class="opp-tag">EV Ecosystem</div>
+          <div class="opp-title">Canada's #1 EV VW Dealer — ILR: 2</div>
+          <div class="opp-text">/ev-rebate.html has ILR 2 and a single internal link. The BC EV incentive page for Canada's top VW EV dealer is virtually de-indexed. Elevating this page alone opens a full cluster of high-intent commercial queries.</div>
+          <div class="opp-stat">ILR 2</div>
+          <div class="opp-stat-l">current score → target ≥50</div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-tag">Video SERP</div>
+          <div class="opp-title">798 Keywords, Zero Videos</div>
+          <div class="opp-text">798 keywords trigger Video SERP features. Vancouver VW has zero video content. A YouTube channel with ID.4 test drives, EV charging guides, and model comparisons — embedded in VDPs — captures this pool without touching CMS code.</div>
+          <div class="opp-stat">798</div>
+          <div class="opp-stat-l">available video SERP keywords</div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-tag">Reviews as SEO Asset</div>
+          <div class="opp-title">1,273+ Reviews — 0 Rich Snippets</div>
+          <div class="opp-text">1,273+ Birdeye reviews produce zero star ratings in Google results because Review schema is missing. 2–3 hours of JSON-LD implementation. Expected CTR uplift: +10–35% on key pages.</div>
+          <div class="opp-stat">1,273<sup style="font-size:14px">+</sup></div>
+          <div class="opp-stat-l">reviews not shown in SERP</div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-tag">AI Search</div>
+          <div class="opp-title">148 Pages Cited — Randomly</div>
+          <div class="opp-text">148 pages are already cited in ChatGPT (32 mentions), AI Overview (31), AI Mode (34), and Gemini (18). Without llms.txt, AI models cite pages at random. A 30-line file directs high-intent queries to inventory and EV pages specifically.</div>
+          <div class="opp-stat">428</div>
+          <div class="opp-stat-l">AI Overview keywords uncaptured</div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-tag">Local Pack</div>
+          <div class="opp-title">157 Local Keywords Uncaptured</div>
+          <div class="opp-text">157 local-intent keywords available in Google's Local Pack — none captured. Google Business Profile optimization: weekly posts, Q&A, model-specific inventory photos. No technical dependency on CMS or platform.</div>
+          <div class="opp-stat">+40<span style="font-size:14px">–60%</span></div>
+          <div class="opp-stat-l">local traffic potential</div>
+        </div>
+        <div class="opp-card">
+          <div class="opp-tag">Branded Recovery</div>
+          <div class="opp-title">−17.5% Brand Traffic Trend</div>
+          <div class="opp-text">Branded search declining −17.45% in a 65-year-old dealer with 1,273+ reviews signals a retention gap, not a recognition problem. Post-sale email sequence + EV owner content (charging, rebates, upgrades) converts each sale into 4–7 branded searches per year.</div>
+          <div class="opp-stat">−17.5<span style="font-size:14px">%</span></div>
+          <div class="opp-stat-l">branded traffic to reverse</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S9 EXECUTIVE PITCH -->
+  <div class="slide" data-index="8">
+    <div class="pitch-layout">
+      <div class="s-eyebrow">08 — Executive Presentation</div>
+      <h2 class="s-title" style="font-size:38px;margin-bottom:8px">Prepared answers<br><em>for the GM conversation</em></h2>
+      <div class="pitch-grid">
+        <div class="pitch-block">
+          <div class="pitch-q">Opening statement</div>
+          <div class="pitch-a">"The site has 961 keywords — more than any direct competitor in Lower Mainland — yet 83% of that traffic never reaches a single vehicle page. I identified the exact cause. There's a CMS template bug blocking PageRank from flowing to inventory. Here are the five things we can do this week without touching a line of code."</div>
+        </div>
+        <div class="pitch-block">
+          <div class="pitch-q">If asked: "What's the biggest problem?"</div>
+          <div class="pitch-a">"A variable in the CMS template tags every inventory link as nofollow — it tells Google not to follow or credit those pages. In business terms: every click from homepage to a Tiguan or ID.4 is a dead end for Google's ranking engine. One platform fix can change that. While IT resolves it, we have five actions executable this week at zero cost."</div>
+        </div>
+        <div class="pitch-block">
+          <div class="pitch-q">If asked: "Where do you start?"</div>
+          <div class="pitch-a">"Three things this week at zero additional budget: title tags for ID.4 and Tiguan 2026 — our top two models have no title, despite being the highest-potential pages on the site. A 30-line file that makes ChatGPT and Perplexity cite our inventory pages instead of random content. And a priority escalation with platform support to resolve the nofollow bug."</div>
+        </div>
+        <div class="pitch-block">
+          <div class="pitch-q">If asked: "Why is brand traffic falling?"</div>
+          <div class="pitch-a">"It's a retention signal, not a recognition problem. A −17.45% decline in branded searches for a 65-year-old dealer with 1,273+ reviews means existing customers aren't returning online between visits. The fix isn't more advertising — it's a post-sale content program: EV owner guides, maintenance reminders, BC incentive updates. Each converted customer becomes 4–7 branded searches per year."</div>
+        </div>
+        <div class="pitch-block">
+          <div class="pitch-q">If asked: "Why not hire an SEO agency?"</div>
+          <div class="pitch-a">"An external agency takes 60 days to understand the CMS and the business. This audit already has that knowledge. The highest-leverage fix — the platform bug — requires internal access and a direct relationship with the technical team. What's needed is someone who understands the product, the EV market in BC, and can communicate the priority internally. That's the role."</div>
+        </div>
+        <div class="pitch-block">
+          <div class="pitch-q">Closing</div>
+          <div class="pitch-a">"This report is what I deliver before day one. I came prepared because that's how I work — I don't wait for a title to understand the problem. The 90-day report will show the numbers behind every decision we make together. The gap is documented. The fixes are mapped. The only variable is execution speed."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S10 CLOSING -->
+  <div class="slide" data-index="9">
+    <div class="s10-inner">
+      <h2 class="closing-title">The gap is documented.<br>The fixes are <em>mapped.</em></h2>
+      <p class="closing-sub">A phased technical SEO and digital growth strategy built on real audit data — designed to move Vancouver Volkswagen's online performance in line with its market position as Canada's #1 VW dealer.</p>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:28px;text-align:left;max-width:380px;margin-left:auto;margin-right:auto">
+        <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em">Site Health</span><span style="color:var(--amber);font-family:'Playfair Display',serif">76% → Target 90%+</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em">Traffic Distribution</span><span style="color:var(--red);font-family:'Playfair Display',serif">83% homepage → balanced</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em">Organic Uplift (fix 1)</span><span style="color:var(--green);font-family:'Playfair Display',serif">+50–200% in 60–90 days</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;padding:6px 0"><span style="color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.08em">SERP Opportunity</span><span style="color:var(--ink);font-family:'Playfair Display',serif">635+ features available</span></div>
+      </div>
+      <div class="closing-sig">Presented by <strong>Alejandro Benita</strong> · Director of Growth & Brand Strategy<br><span style="font-size:10px;font-family:'DM Mono',monospace;letter-spacing:.1em">March 2026 · Vancouver Volkswagen · Confidential</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* CURSOR */
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.28;ry+=(my-ry)*.28;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+
+/* THEME */
+const root=document.documentElement;
+document.getElementById('theme-btn').addEventListener('click',()=>{
+  root.setAttribute('data-theme',root.getAttribute('data-theme')==='dark'?'light':'dark');
+});
+
+/* SLIDES */
+const slides=document.querySelectorAll('.slide');
+const N=slides.length;
+let current=0,busy=false;
+
+const dotsEl=document.getElementById('dots');
+slides.forEach((_,i)=>{
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  d.addEventListener('click',()=>goTo(i));
+  dotsEl.appendChild(d);
+});
+
+function goTo(idx){
+  if(idx===current||busy)return;
+  busy=true;
+  const fwd=idx>current;
+  const prev=current; current=idx;
+
+  slides[prev].classList.remove('active');
+  slides[prev].classList.add(fwd?'out-fwd':'out-bck');
+
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    slides[current].classList.add('active');
+  }));
+
+  setTimeout(()=>{
+    slides[prev].classList.remove('out-fwd','out-bck');
+    busy=false;
+    if(current===4){
+      setTimeout(()=>document.querySelectorAll('.score-fill').forEach(b=>b.style.width=b.dataset.w+'%'),260);
+    } else {
+      document.querySelectorAll('.score-fill').forEach(b=>b.style.width='0%');
+    }
+  },480);
+
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===current));
+  document.querySelectorAll('.menu-nav a').forEach(a=>a.classList.toggle('active-link',parseInt(a.dataset.slide)===current));
+  closeMenu();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'&&current<N-1)goTo(current+1);
+  if(e.key==='ArrowLeft'&&current>0)goTo(current-1);
+});
+
+/* SCROLL */
+let lastWheel=0;
+document.addEventListener('wheel',e=>{
+  const now=Date.now();
+  if(now-lastWheel<600)return;
+  lastWheel=now;
+  if(e.deltaY>30&&current<N-1)goTo(current+1);
+  if(e.deltaY<-30&&current>0)goTo(current-1);
+},{passive:true});
+
+/* MENU */
+const menuBtn=document.getElementById('menu-btn');
+const drawer=document.getElementById('menu-drawer');
+const overlay=document.getElementById('overlay');
+function openMenu(){menuBtn.classList.add('open');drawer.classList.add('open');overlay.classList.add('visible')}
+function closeMenu(){menuBtn.classList.remove('open');drawer.classList.remove('open');overlay.classList.remove('visible')}
+menuBtn.addEventListener('click',()=>drawer.classList.contains('open')?closeMenu():openMenu());
+overlay.addEventListener('click',closeMenu);
+document.querySelectorAll('.menu-nav a').forEach(a=>{
+  a.addEventListener('click',e=>{e.preventDefault();goTo(parseInt(a.dataset.slide))});
+});
+
+/* SWIPE */
+let tx=0;
+document.addEventListener('touchstart',e=>tx=e.touches[0].clientX);
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx;
+  if(dx<-50&&current<N-1)goTo(current+1);
+  if(dx>50&&current>0)goTo(current-1);
+});
+
+/* PARALLAX GLOW */
+document.addEventListener('mousemove',e=>{
+  const nx=(e.clientX/window.innerWidth-.5)*26;
+  const ny=(e.clientY/window.innerHeight-.5)*26;
+  document.getElementById('glow1').style.transform=`translate(${nx}px,${ny}px)`;
+  document.getElementById('glow2').style.transform=`translate(${-nx}px,${-ny}px)`;
+});
+</script>
+</body>
+</html>
